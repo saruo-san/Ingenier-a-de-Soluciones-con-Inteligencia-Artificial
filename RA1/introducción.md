@@ -10,11 +10,11 @@ El enfoque práctico permite que las/los estudiantes desarrollen habilidades té
 
 ## Actividades
 
-Act 1.1 - Introducción a LLMs y Conexión APIs
-Act 1.2 - Técnicas de Prompt Engineering
-Act 1.3 - Evaluación y Optimización de LLMs
+- Act 1.1 - Introducción a LLMs y Conexión APIs
+- Act 1.2 - Técnicas de Prompt Engineering
+- Act 1.3 - Evaluación y Optimización de LLMs
 
 ## Evaluaciones
 
-Ev For 1 - Quiz Fundamentos IA Generativa
-EV Parcial 1 - Diseño de Soliución con LLM y RAG
+- Ev For 1 - Quiz Fundamentos IA Generativa
+- EV Parcial 1 - Diseño de Soliución con LLM y RAG
