@@ -1,0 +1,2 @@
+# Infraestructura de RAG
+Diseña arquitecturas de solución que integren LLMs, herramientas de recuperación de información y control de contexto, bajo condiciones de precisión y relevancia de respuestas.​
