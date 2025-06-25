@@ -48,4 +48,45 @@ En este módulo exploramos las mejores prácticas para documentar sistemas de ag
 
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Microservices Patterns](https://microservices.io/patterns/)
-- [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html) 
+- [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html)
+
+"""
+IL2.4: Ejemplo de Documentación de Arquitectura
+===============================================
+Describe brevemente la arquitectura de tu agente o sistema.
+"""
+
+# Ejemplo de arquitectura simple:
+# - Un agente principal que recibe preguntas y usa una herramienta de cálculo.
+
+class MainAgent:
+    def __init__(self, tool):
+        self.tool = tool
+
+    def answer(self, question):
+        if "suma" in question:
+            return self.tool("2+2")
+        return "No sé la respuesta."
+
+def calculator(expression):
+    return str(eval(expression))
+
+if __name__ == "__main__":
+    agent = MainAgent(calculator)
+    print(agent.answer("¿Cuánto es la suma de 2+2?"))
+
+# Documentación:
+# Componentes:
+# - MainAgent: gestiona la interacción.
+# - calculator: herramienta de cálculo.
+# Flujo: Usuario -> MainAgent -> calculator -> respuesta.
+
+"""
+IL2.4: Buenas Prácticas para Proyectos de Agentes
+=================================================
+- Usa nombres claros para tus clases y funciones.
+- Documenta cada función con docstrings.
+- Separa la lógica del agente y las herramientas.
+- Usa control de versiones (Git).
+- Escribe ejemplos de uso en el archivo principal.
+""" 
