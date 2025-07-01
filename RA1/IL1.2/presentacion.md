@@ -216,23 +216,6 @@ Nueva entrada: Input → ?
 
 ---
 
-## Slide 11: Prompts Específicos por Dominio
-**Título:** Notebook 5 - Adaptación a Áreas Especializadas
-
-**Dominios cubiertos:**
-- **Técnico:** Análisis de código, generación de tests, debugging
-- **Creativo:** Copy publicitario, contenido, storytelling
-- **Analítico:** Investigación, análisis de datos, reportes
-- **Negocio:** Marketing, ventas, estrategia empresarial
-
-**Patrones por dominio:**
-- **Código:** Estructura + comentarios + casos edge
-- **Marketing:** Audiencia + mensaje + call-to-action
-- **Finanzas:** Datos + cálculos + interpretación + riesgo
-- **Investigación:** Fuentes + metodología + análisis + conclusiones
-
----
-
 ## Slide 12: Evaluación y Optimización
 **Título:** Métricas y Técnicas de Mejora Iterativa
 
