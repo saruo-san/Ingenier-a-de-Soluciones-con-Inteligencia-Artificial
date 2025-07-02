@@ -1,700 +1,98 @@
-# Presentación IL1.4 - Evaluación y Optimización de LLMs
+# Módulo 4: Evaluación y Optimización de LLMs y RAG
 
-## Slide 1: Título y Objetivos
-**Título:** IL1.4 - Evaluación y Optimización de LLMs  
-**Subtítulo:** Justificación de Decisiones de Diseño y Trazabilidad de Datos
+## Objetivos de la Sesión
+- Comprender la importancia de evaluar sistemáticamente los sistemas RAG.
+- Identificar las métricas clave para medir la calidad de la recuperación y la generación.
+- Aprender a utilizar LangSmith como herramienta para la evaluación y trazabilidad de pipelines RAG.
+- Aplicar los conceptos para crear un ciclo de evaluación y mejora continua.
 
-**Objetivos:**
-- Justificar decisiones de diseño de soluciones con LLMs
-- Considerar requerimientos organizacionales en arquitecturas LLM
-- Implementar trazabilidad de datos y limitaciones del modelo
-- Desarrollar sistemas de evaluación automática y métricas de calidad
-- Integrar herramientas de observabilidad como LangSmith para monitoreo
+## 1. ¿Por qué es Crucial Evaluar los Sistemas RAG?
 
----
+Un sistema RAG tiene dos componentes principales que pueden fallar: el **recuperador (Retriever)** y el **generador (Generator)**. Sin una evaluación rigurosa, es imposible saber qué componente está fallando o cómo mejorar el rendimiento general.
 
-## Slide 2: ¿Por qué Evaluar LLMs?
-**Título:** Importancia de la Evaluación Sistemática
+- **Fallas de Recuperación**: El sistema puede traer documentos irrelevantes (baja precisión) u omitir documentos importantes (bajo recall).
+- **Fallas de Generación**: La respuesta puede no ser fiel al contexto recuperado (alucinaciones) o no responder adecuadamente a la pregunta del usuario.
 
-**Desafíos en producción:**
-- **Inconsistencia:** Respuestas variables para inputs similares
-- **Alucinaciones:** Generación de información incorrecta
-- **Sesgo:** Respuestas pueden reflejar sesgos del entrenamiento
-- **Deriva temporal:** Performance puede degradarse con el tiempo
-- **Escalabilidad:** Dificultad para mantener calidad a gran escala
+La evaluación nos permite pasar de un desarrollo basado en la intuición a uno **guiado por datos**, identificando cuellos de botella y optimizando el sistema de forma iterativa.
 
-**Consecuencias sin evaluación:**
-- Pérdida de confianza del usuario
-- Decisiones empresariales incorrectas
-- Problemas de compliance y regulación
-- Costos ocultos por re-trabajo
-- Riesgo reputacional
+## 2. Métricas Fundamentales para la Evaluación RAG
 
-**Beneficios de evaluación sistemática:**
-- Confianza en respuestas del sistema
-- Optimización continua de performance
-- Identificación temprana de problemas
-- Justificación de decisiones técnicas
+Evaluamos los dos componentes del RAG de forma separada.
 
----
+### Métricas de Recuperación (Retrieval)
 
-## Slide 3: Marcos de Evaluación para LLMs
-**Título:** Enfoques Sistemáticos de Evaluación
+Miden la calidad de los documentos que el sistema recupera.
 
-**1. Evaluación Basada en Métricas:**
-- Relevancia, fidelidad, completitud, claridad
-- Scores numéricos para comparación objetiva
-- Automatizable y escalable
+- **Context Precision (Precisión del Contexto)**:
+  - **Pregunta**: De los documentos recuperados, ¿cuántos son realmente relevantes para la pregunta?
+  - **Fórmula**: `(Número de documentos relevantes recuperados) / (Total de documentos recuperados)`
+  - **Objetivo**: Maximizar. Una baja precisión significa que el generador recibe "ruido".
 
-**2. Evaluación Humana:**
-- Expertos evalúan calidad de respuestas
-- Mayor precisión pero costosa y lenta
-- Necesaria para validación final
+- **Context Recall (Exhaustividad del Contexto)**:
+  - **Pregunta**: De todos los documentos relevantes que existen en la base de conocimiento, ¿cuántos logramos recuperar?
+  - **Fórmula**: `(Número de documentos relevantes recuperados) / (Total de documentos relevantes existentes)`
+  - **Objetivo**: Maximizar. Un bajo recall significa que el generador no tiene toda la información que necesita.
 
-**3. Evaluación Comparativa:**
-- A/B testing entre diferentes configuraciones
-- Benchmarks estandarizados
-- Comparación con baselines establecidos
+### Métricas de Generación (Generation)
 
-**4. Pipeline de evaluación:**
-```
-Datos → Modelo → Predicción → Evaluación → Métricas → Optimización
-```
+Miden la calidad de la respuesta final generada por el LLM.
 
-**Consideraciones clave:**
-- Balance entre automatización y precision humana
-- Representatividad del dataset de evaluación
-- Múltiples métricas para visión holística
+- **Faithfulness (Fidelidad)**:
+  - **Pregunta**: ¿La respuesta generada se basa estrictamente en el contexto proporcionado?
+  - **Medición**: Se evalúa si la respuesta contiene información que no se puede verificar en los documentos recuperados.
+  - **Objetivo**: Maximizar. Una baja fidelidad indica que el modelo está "alucinando" o inventando información.
 
----
+- **Answer Relevancy (Relevancia de la Respuesta)**:
+  - **Pregunta**: ¿La respuesta aborda de forma directa y útil la pregunta original del usuario?
+  - **Medición**: Se evalúa la utilidad y pertinencia de la respuesta en relación con la consulta inicial.
+  - **Objetivo**: Maximizar. Una respuesta puede ser fiel al contexto pero no ser útil para el usuario.
 
-## Slide 4: Métricas Fundamentales de Evaluación
-**Título:** KPIs para Sistemas LLM
+## 3. LangSmith: Una Plataforma para la Evaluación
 
-**Métricas de Calidad:**
+**LangSmith** es una herramienta de LangChain diseñada para la **observabilidad, monitoreo y evaluación** de aplicaciones LLM.
 
-1. **Relevancia (1-10)**
-   - ¿La respuesta aborda la consulta específica?
-   - Criterios: completamente irrelevante → altamente relevante
+Para los sistemas RAG, nos ofrece:
+- **Trazabilidad Completa**: Permite ver cada paso del pipeline (recuperación, construcción del prompt, llamada al LLM) para un debugging sencillo.
+- **Gestión de Datasets**: Facilita la creación de conjuntos de datos con preguntas y respuestas de referencia (ground truth).
+- **Evaluadores Automáticos**: Proporciona métricas predefinidas (como `cot_qa` para corrección) y la capacidad de crear evaluadores personalizados.
+- **Análisis Visual**: Ofrece dashboards para comparar experimentos, analizar resultados y encontrar áreas de mejora.
 
-2. **Fidelidad/Faithfulness (1-10)**
-   - ¿La respuesta es fiel al contexto proporcionado?
-   - Criterios: contradice contexto → completamente fiel
+## 4. Pasos para Evaluar un RAG con LangSmith
 
-3. **Completitud (1-10)**
-   - ¿La respuesta cubre todos los aspectos importantes?
-   - Criterios: muy incompleta → muy completa
+El notebook `2-langsmith-evaluation.ipynb` nos guía a través de un proceso práctico:
 
-4. **Claridad (1-10)**
-   - ¿La respuesta es clara y comprensible?
-   - Criterios: confusa → excelente comunicación
+### Paso 1: Configuración e Instrumentación
+- Se instalan las librerías necesarias (`langsmith`, `langchain`, `openai`).
+- Se configuran las variables de entorno para conectar con la API de LangSmith.
+- Se "instrumenta" el código del RAG usando el decorador `@traceable` para que LangSmith pueda capturar cada paso.
 
-**Métricas de Rendimiento:**
-- Latencia (tiempo de respuesta)
-- Throughput (consultas por segundo)
-- Uso de tokens y costos
-- Disponibilidad del sistema
+### Paso 2: Creación de un Dataset de Evaluación
+- Se define un `dataset` en LangSmith, que actúa como nuestro "ground truth".
+- Se añaden ejemplos al dataset, cada uno con:
+  - `inputs`: La pregunta del usuario (e.g., `{"query": "¿Qué es RAG?"}`).
+  - `outputs`: La respuesta correcta de referencia (e.g., `{"answer": "RAG combina búsqueda y generación..."}`).
 
----
+### Paso 3: Ejecución de la Evaluación
+- Se utiliza la función `evaluate()` de LangSmith.
+- Se le indica qué función debe ejecutar (`target_function`), qué dataset usar y qué evaluadores aplicar.
+- LangSmith ejecuta el pipeline RAG para cada pregunta del dataset y compara la respuesta generada con la respuesta de referencia usando un LLM como juez.
 
-## Slide 5: Implementación Básica de Evaluación
-**Título:** Script 1 - Basic Evaluation (1-basic-evaluation.py)
+### Paso 4: Análisis de Resultados
+- LangSmith genera un informe detallado del experimento.
+- Se puede analizar una tabla con las puntuaciones de cada métrica para cada pregunta.
+- Es posible "profundizar" en cada ejecución para ver la traza completa y entender por qué el sistema falló o tuvo éxito.
 
-**Clase LLMEvaluator principales:**
-```python
-class LLMEvaluator:
-    def evaluate_relevance(self, query: str, response: str):
-        # Evalúa relevancia usando otro LLM como juez
-        eval_prompt = f"""Evalúa la relevancia de la respuesta 
-        para la consulta en una escala del 1-10...
-        Consulta: {query}
-        Respuesta: {response}"""
-        return {"score": score, "justification": explanation}
-```
+## Actividad Práctica
 
-**Funcionalidades implementadas:**
-- Evaluación automática con LLM como juez
-- Métricas básicas (longitud, estructura)
-- Exportación a JSON y CSV
-- Estadísticas agregadas
-- Evaluación por lotes (datasets)
+El entregable de este módulo consiste en:
+1.  **Ejecutar el notebook `1-evaluation-rag.py`** para comprender conceptualmente las métricas.
+2.  **Configurar y ejecutar el notebook `2-langsmith-evaluation.ipynb`**, conectándolo con tu propia cuenta de LangSmith.
+3.  **Crear tu propio dataset de evaluación** con al menos 5 ejemplos relevantes para los documentos proporcionados.
+4.  **Ejecutar la evaluación** y analizar los resultados en el dashboard de LangSmith.
+5.  **Proponer una mejora** al sistema RAG (ej. modificar el prompt, cambiar el método de retrieval) y **ejecutar una nueva evaluación** para comparar los resultados.
 
-**Ventajas del enfoque:**
-- Escalable y automatizado
-- Consistente en criterios
-- Justificaciones explícitas
-- Integrable en pipelines CI/CD
+## Conclusiones y Próximos Pasos
 
----
-
-## Slide 6: Evaluación LLM-as-a-Judge
-**Título:** Usando LLMs para Evaluar LLMs
-
-**Concepto:**
-Usar un LLM (generalmente más potente) para evaluar las respuestas de otro LLM basándose en criterios específicos.
-
-**Implementación:**
-```python
-def evaluate_faithfulness(self, context: str, response: str):
-    eval_prompt = f"""¿La respuesta es fiel al contexto?
-    
-    Contexto: {context}
-    Respuesta: {response}
-    
-    Criterios:
-    - 1-3: Contradice o inventa información
-    - 7-10: Completamente fiel al contexto
-    
-    Formato: Puntuación: [número] / Justificación: [explicación]"""
-    
-    return structured_evaluation_result
-```
-
-**Ventajas:**
-- Comprensión contextual sofisticada
-- Explicaciones detalladas
-- Adaptable a diferentes dominios
-- Evaluación en lenguaje natural
-
-**Limitaciones:**
-- Costo adicional en tokens
-- Posible sesgo del modelo evaluador
-- Necesita validación con evaluación humana
-
----
-
-## Slide 7: Datasets y Ground Truth
-**Título:** Construcción de Conjuntos de Evaluación
-
-**Características de un buen dataset:**
-1. **Diversidad:** Diferentes tipos de consultas y contextos
-2. **Representatividad:** Refleja casos de uso reales
-3. **Tamaño adecuado:** Balance entre cobertura y tiempo de evaluación
-4. **Ground truth:** Respuestas de referencia bien definidas
-5. **Metadatos:** Categorías, dificultad, dominio
-
-**Ejemplo de estructura:**
-```python
-dataset_example = [
-    {
-        "query": "¿Qué es la inteligencia artificial?",
-        "context": "La IA es una rama de la informática...",
-        "ground_truth": "Respuesta de referencia",
-        "metadata": {
-            "category": "definiciones",
-            "difficulty": "basic",
-            "domain": "tecnologia"
-        }
-    }
-]
-```
-
-**Estrategias de construcción:**
-- Casos reales de usuarios
-- Ejemplos sintéticos balanceados
-- Edge cases y casos problemáticos
-- Actualización continua basada en uso
-
----
-
-## Slide 8: LangSmith - Plataforma de Observabilidad
-**Título:** Evaluación Avanzada con LangSmith
-
-**¿Qué es LangSmith?**
-Plataforma desarrollada por LangChain para observabilidad, debugging y evaluación de aplicaciones LLM.
-
-**Funcionalidades clave:**
-- **Trazabilidad completa:** Seguimiento de cada paso del pipeline
-- **Evaluaciones automáticas:** Métricas predefinidas y personalizadas
-- **Datasets gestionados:** Casos de prueba y ground truth
-- **Debugging visual:** Interfaz para entender cada paso
-- **Comparación de modelos:** Análisis A/B de configuraciones
-
-**Configuración inicial:**
-```python
-import os
-from langsmith import Client
-
-# Variables de entorno
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_API_KEY"] = "tu_api_key"
-os.environ["LANGCHAIN_PROJECT"] = "proyecto-evaluacion"
-
-client = Client()
-```
-
----
-
-## Slide 9: Instrumentación con LangSmith
-**Título:** Implementación de Trazabilidad
-
-**Decorador @traceable:**
-```python
-from langsmith import traceable
-
-@traceable(name="retrieval_step")
-def retrieve_documents(query: str, top_k: int = 5):
-    # LangSmith automáticamente captura inputs/outputs
-    documents = search_vector_db(query, top_k)
-    return documents
-
-@traceable(name="generation_step") 
-def generate_response(query: str, context: str):
-    response = llm.invoke(f"Contexto: {context}\nPregunta: {query}")
-    return response
-
-@traceable(name="rag_pipeline")
-def rag_pipeline(query: str):
-    documents = retrieve_documents(query)
-    context = "\n".join([doc.page_content for doc in documents])
-    response = generate_response(query, context)
-    
-    return {"query": query, "context": context, "response": response}
-```
-
-**Beneficios:**
-- Trazabilidad automática de todo el pipeline
-- Visualización de flujo de datos
-- Identificación de cuellos de botella
-- Debug de fallos específicos
-
----
-
-## Slide 10: Evaluadores de LangSmith
-**Título:** Implementación de Métricas Automatizadas
-
-**Evaluadores predefinidos:**
-```python
-from langsmith.evaluation import evaluate, LangChainStringEvaluator
-
-evaluators = [
-    LangChainStringEvaluator(
-        "labeled_score_string",
-        config={
-            "criteria": {
-                "relevance": "¿Qué tan relevante es la respuesta?"
-            },
-            "normalize_by": 10
-        }
-    ),
-    LangChainStringEvaluator(
-        "labeled_score_string", 
-        config={
-            "criteria": {
-                "faithfulness": "¿La respuesta está basada en el contexto?"
-            },
-            "normalize_by": 10
-        }
-    )
-]
-```
-
-**Evaluadores personalizados:**
-```python
-def custom_context_precision_evaluator(run: Run, example: Example):
-    retrieved_docs = extract_retrieved_docs(run)
-    query = run.inputs["query"]
-    
-    relevant_count = count_relevant_docs(query, retrieved_docs)
-    precision = relevant_count / len(retrieved_docs)
-    
-    return {
-        "score": precision,
-        "comment": f"Documentos relevantes: {relevant_count}/{len(retrieved_docs)}"
-    }
-```
-
----
-
-## Slide 11: Creación y Gestión de Datasets
-**Título:** Datasets de Evaluación en LangSmith
-
-**Crear dataset:**
-```python
-from langsmith import Client
-
-client = Client()
-
-# Crear dataset
-dataset = client.create_dataset(
-    dataset_name="rag-evaluation-dataset",
-    description="Dataset para evaluar sistema RAG"
-)
-
-# Agregar ejemplos
-examples = [
-    {
-        "inputs": {"query": "¿Qué es la inteligencia artificial?"},
-        "outputs": {"answer": "La IA es una rama de la informática..."},
-        "metadata": {"category": "definiciones", "difficulty": "basic"}
-    }
-]
-
-for example in examples:
-    client.create_example(
-        dataset_id=dataset.id,
-        inputs=example["inputs"],
-        outputs=example["outputs"],
-        metadata=example["metadata"]
-    )
-```
-
-**Mejores prácticas:**
-- Versionado de datasets
-- Metadatos descriptivos
-- Casos representativos
-- Actualización continua
-
----
-
-## Slide 12: Ejecución de Evaluaciones
-**Título:** Pipeline de Evaluación Automatizada
-
-**Evaluación completa:**
-```python
-from langsmith.evaluation import evaluate
-
-def rag_predict(inputs):
-    """Función que será evaluada"""
-    query = inputs["query"]
-    result = rag_pipeline(query)
-    return {"answer": result["response"]}
-
-# Ejecutar evaluación
-results = evaluate(
-    rag_predict,
-    data=dataset_name,
-    evaluators=evaluators,
-    experiment_prefix="rag-v1",
-    metadata={
-        "version": "1.0", 
-        "model": "gpt-4",
-        "retrieval_method": "semantic_search"
-    }
-)
-```
-
-**Configuración de experimentos:**
-- Prefijos descriptivos para organización
-- Metadatos para comparación
-- Múltiples evaluadores simultáneos
-- Resultados persistentes y comparables
-
----
-
-## Slide 13: Análisis de Resultados
-**Título:** Dashboard y Analytics
-
-**Interfaz web de LangSmith:**
-- **Experiments:** Comparar diferentes configuraciones
-- **Datasets:** Gestionar casos de prueba
-- **Traces:** Explorar ejecuciones individuales
-- **Analytics:** Métricas agregadas y tendencias
-
-**Análisis programático:**
-```python
-# Obtener resultados de experimento
-experiment_results = client.list_runs(
-    project_name="rag-evaluation-project",
-    execution_order=1,
-    is_root=True
-)
-
-# Calcular estadísticas
-scores = []
-for run in experiment_results:
-    if run.feedback_stats:
-        scores.append(run.feedback_stats)
-
-avg_relevance = np.mean([s.get('relevance', 0) for s in scores])
-avg_faithfulness = np.mean([s.get('faithfulness', 0) for s in scores])
-```
-
-**Exportación de datos:**
-- CSV para análisis externo
-- JSON para integración con otras herramientas
-- APIs para dashboards personalizados
-
----
-
-## Slide 14: Consideraciones de Diseño Organizacional
-**Título:** Requerimientos Empresariales
-
-**Factores organizacionales:**
-
-1. **Compliance y Regulación**
-   - GDPR, SOX, HIPAA según industria
-   - Auditoría de decisiones automatizadas
-   - Explicabilidad de respuestas
-
-2. **Escalabilidad**
-   - Volumen de consultas esperado
-   - Crecimiento proyectado de usuarios
-   - Distribución geográfica
-
-3. **Costos y ROI**
-   - Costo por consulta vs. valor generado
-   - Trade-offs entre calidad y precio
-   - Optimización de uso de tokens
-
-4. **Integración con Sistemas Existentes**
-   - APIs legacy y nuevas
-   - Sistemas de autenticación
-   - Workflows organizacionales
-
-**Documentación de decisiones:**
-- Justificación técnica de arquitectura
-- Trade-offs considerados
-- Métricas de éxito definidas
-- Plan de monitoreo y mejora
-
----
-
-## Slide 15: Trazabilidad y Limitaciones del Modelo
-**Título:** Transparencia y Gestión de Riesgos
-
-**Trazabilidad de datos:**
-```python
-# Logging estructurado de decisiones
-log_entry = {
-    'timestamp': datetime.now().isoformat(),
-    'query': user_query,
-    'retrieved_docs': [doc.metadata for doc in docs],
-    'model_config': {
-        'model': 'gpt-4o',
-        'temperature': 0.7,
-        'max_tokens': 500
-    },
-    'response': generated_response,
-    'confidence_score': confidence_metric,
-    'sources_cited': source_references
-}
-```
-
-**Limitaciones documentadas:**
-- **Conocimiento temporal:** Datos hasta fecha de entrenamiento
-- **Dominio específico:** Expertise limitada en nichos
-- **Contexto:** Límites de ventana de contexto
-- **Idioma:** Variabilidad en idiomas menos representados
-- **Sesgo:** Posibles sesgos en respuestas
-
-**Estrategias de mitigación:**
-- Disclaimers apropiados
-- Validación humana para decisiones críticas
-- Fallbacks para casos no manejables
-- Actualización regular de conocimiento
-
----
-
-## Slide 16: Optimización Basada en Evaluación
-**Título:** Ciclo de Mejora Continua
-
-**Pipeline de optimización:**
-```
-Evaluación → Análisis → Identificación de problemas → Ajustes → Re-evaluación
-```
-
-**Estrategias de optimización:**
-
-1. **Prompt Engineering**
-   - Refinamiento basado en métricas de relevancia
-   - A/B testing de diferentes formatos
-   - Optimización de instrucciones del sistema
-
-2. **Configuración del Modelo**
-   - Ajuste de temperatura según tarea
-   - Optimización de max_tokens
-   - Selección de modelo apropiado
-
-3. **Sistema de Recuperación**
-   - Mejora de embeddings y chunking
-   - Optimización de algoritmos de búsqueda
-   - Filtros y re-ranking
-
-4. **Pipeline Completo**
-   - Balanceamiento de latencia vs. calidad
-   - Optimización de costos operacionales
-   - Mejora de experiencia de usuario
-
-**Métricas de seguimiento:**
-- Tendencias temporales de calidad
-- Satisfacción del usuario
-- Eficiencia operacional
-- ROI del sistema
-
----
-
-## Slide 17: Integración en CI/CD
-**Título:** Evaluación en Pipelines de Desarrollo
-
-**Evaluación automatizada:**
-```yaml
-# GitHub Actions / CI Pipeline
-- name: Run LLM Evaluation
-  run: |
-    python -m pytest tests/evaluation/
-    python scripts/run_langsmith_evaluation.py
-    python scripts/generate_evaluation_report.py
-```
-
-**Gates de calidad:**
-- Umbrales mínimos de métricas para deployment
-- Regresión detection en comparación con baseline
-- Evaluación diferencial entre versiones
-
-**Monitoreo en producción:**
-- Sampling de consultas para evaluación continua
-- Alertas por degradación de métricas
-- Dashboard de salud del sistema
-
-**Ejemplo de configuración:**
-```python
-# Evaluación continua en producción
-def production_quality_check(query, response, context):
-    if random.random() < 0.05:  # 5% sampling
-        evaluation_result = evaluator.evaluate_response(query, response, context)
-        
-        if evaluation_result["overall_score"] < 6.0:
-            send_alert(f"Low quality response detected: {evaluation_result}")
-        
-        log_to_monitoring_system(evaluation_result)
-```
-
----
-
-## Slide 18: Casos de Uso y Mejores Prácticas
-**Título:** Implementación en Diferentes Dominios
-
-**Sector Financiero:**
-- Evaluación de precisión factual crítica
-- Compliance con regulaciones financieras
-- Auditabilidad de decisiones automatizadas
-- Gestión de riesgos y disclaimers
-
-**Sector Salud:**
-- Validación médica por expertos humanos
-- Limitaciones claras de capacidades diagnósticas
-- Integración con sistemas clínicos
-- Privacidad y seguridad de datos
-
-**Educación:**
-- Adaptación a diferentes niveles educativos
-- Evaluación de calidad pedagógica
-- Seguimiento de progreso de aprendizaje
-- Personalización de contenido
-
-**Soporte al Cliente:**
-- Medición de satisfacción del usuario
-- Escalamiento inteligente a humanos
-- Consistencia en políticas corporativas
-- Análisis de sentimiento de interacciones
-
-**Mejores prácticas transversales:**
-- Comenzar con evaluación básica y evolucionar
-- Combinar métricas automáticas con validación humana
-- Documentar decisiones y limitaciones
-- Establecer ciclos de mejora continua
-
----
-
-## Slide 19: Herramientas del Ecosistema
-**Título:** Plataformas y Recursos Complementarios
-
-**Plataformas de evaluación:**
-- **LangSmith:** Observabilidad integral de LangChain
-- **Langfuse:** Analytics y debugging de prompts
-- **Arize:** Monitoreo de ML performance
-- **Weights & Biases:** Experimentación y tracking
-
-**Herramientas de desarrollo:**
-```python
-# Integración con múltiples plataformas
-from langsmith import Client as LangSmithClient
-from langfuse import Langfuse
-import wandb
-
-# Configuración multi-plataforma
-langsmith_client = LangSmithClient()
-langfuse = Langfuse()
-wandb.init(project="llm-evaluation")
-```
-
-**Benchmarks estándar:**
-- HELM (Holistic Evaluation of Language Models)
-- MMLU (Massive Multitask Language Understanding)
-- TruthfulQA para veracidad
-- BigBench para capacidades diversas
-
-**Comunidad y recursos:**
-- Papers de evaluación (RAGAS, etc.)
-- Datasets públicos
-- Mejores prácticas de la industria
-- Grupos de investigación especializados
-
----
-
-## Slide 20: Próximos Pasos y Evolución
-**Título:** Roadmap y Tendencias Futuras
-
-**Tendencias emergentes:**
-- **Evaluación multimodal:** Texto + imágenes + audio
-- **Evaluación de agentes:** Sistemas que toman acciones
-- **Evaluación en tiempo real:** Feedback inmediato
-- **Evaluación federada:** Across múltiples organizaciones
-
-**Próximos módulos:**
-- **RA2:** Desarrollo de agentes inteligentes con LLMs
-- **IL2.1:** Arquitectura de agentes y frameworks (LangChain, CrewAI)
-- **IL2.2:** Memory systems y tool integration (MCP)
-- **IL3.1:** Observabilidad tools y performance metrics
-
-**Skills desarrollados en IL1.4:**
-- Justificación técnica de decisiones de diseño
-- Implementación de sistemas de evaluación automática
-- Integración con plataformas de observabilidad
-- Consideración de requerimientos organizacionales
-- Trazabilidad completa de datos y decisiones
-
-**Preparación para agentes:**
-- Foundation sólida en evaluación de LLMs
-- Herramientas de monitoreo establecidas
-- Pipelines de mejora continua
-- Comprensión de limitaciones y mitigaciones
-
----
-
-## Slide 21: Resumen Ejecutivo
-**Título:** Conceptos Clave del Módulo IL1.4
-
-**Capacidades técnicas adquiridas:**
-1. **Evaluación sistemática** de sistemas LLM con métricas cuantitativas
-2. **Implementación de LLM-as-a-Judge** para evaluación automática
-3. **Integración con LangSmith** para observabilidad completa
-4. **Diseño de datasets** representativos y balanceados
-5. **Justificación de decisiones** técnicas basadas en datos
-
-**Consideraciones organizacionales:**
-- Alineación con requerimientos de compliance
-- Balance entre calidad, costo y latencia
-- Trazabilidad completa para auditoría
-- Gestión transparente de limitaciones
-- Integración con workflows existentes
-
-**Pipeline de evaluación completo:**
-```
-Datos → Modelo → Predicción → Evaluación Multi-Métrica → 
-Análisis → Optimización → Deployment → Monitoreo → Iteración
-```
-
-**Impacto en el negocio:**
-- Confianza en sistemas automatizados
-- Reducción de riesgos operacionales
-- Optimización continua de performance
-- Justificación de inversiones en IA
-- Foundation para sistemas de agentes complejos
-
-**Preparación para RA2:**
-- Herramientas de evaluación listas
-- Pipelines de monitoreo establecidos
-- Comprensión profunda de limitaciones
-- Framework para justificar decisiones técnicas
+- La evaluación no es un paso final, sino un **ciclo continuo** de medición, análisis y optimización.
+- Herramientas como LangSmith son fundamentales para escalar el desarrollo de aplicaciones de IA robustas y confiables.
+- En el siguiente módulo, exploraremos arquitecturas de agentes más complejas y cómo aplicar estos mismos principios de evaluación.
