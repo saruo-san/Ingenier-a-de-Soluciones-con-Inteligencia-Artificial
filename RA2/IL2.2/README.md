@@ -1,51 +1,25 @@
-# IL2.2: Memoria y Herramientas Externas
+# Módulo IL2.2: Sistemas de Memoria e Integración de Herramientas
 
-## 📋 Descripción General
+Este módulo se centra en dotar a los agentes de IA de **memoria**, una capacidad crucial para pasar de interacciones simples a conversaciones coherentes y contextuales. Exploramos cómo los agentes pueden recordar información pasada para responder preguntas de seguimiento y mantener un diálogo fluido.
 
-En este módulo exploramos los sistemas de memoria para agentes LLM y la integración con herramientas externas, incluyendo el protocolo MCP (Model Context Protocol) para conectar agentes con recursos externos.
+## Contenidos del Módulo
 
-## 🎯 Objetivos de Aprendizaje
+### 1. Agentes con Memoria Conversacional
+- **`1-memory-agent.ipynb`**: Introduce el concepto de memoria en los agentes de LangChain. Se implementa un agente que utiliza un historial de chat gestionado manualmente para responder preguntas de seguimiento, demostrando la importancia del contexto en una conversación.
 
-- Comprender diferentes tipos de sistemas de memoria para agentes
-- Implementar memoria conversacional y de trabajo
-- Integrar herramientas externas con agentes LLM
-- Utilizar el protocolo MCP para conexiones seguras
-- Diseñar agentes con capacidades de memoria persistente
+### 2. Sistemas de Memoria Avanzados
+- **`2-memory-agent-advanced.ipynb`**: Profundiza en las soluciones de memoria automatizadas que ofrece LangChain para superar las limitaciones de la gestión manual. Se implementan y comparan tres estrategias clave:
+  - **`ConversationBufferMemory`**: Para un historial de conversación completo.
+  - **`ConversationBufferWindowMemory`**: Para mantener un historial de tamaño fijo, conservando solo las interacciones más recientes.
+  - **`ConversationSummaryMemory`**: Para gestionar conversaciones largas resumiendo el historial y ahorrando tokens.
 
-## 📚 Contenido del Módulo
+## Conceptos Clave
 
-### 1. Sistemas de Memoria
-- [1-memory-systems.py](1-memory-systems.py) - Tipos de memoria y implementaciones
-- [2-conversation-memory.py](2-conversation-memory.py) - Memoria conversacional
-- [3-working-memory.py](3-working-memory.py) - Memoria de trabajo
-- [4-memory-persistence.py](4-memory-persistence.py) - Persistencia de memoria
+- **Memoria Conversacional**: La capacidad de un agente para retener y utilizar información de interacciones pasadas.
+- **Gestión de Estado (Stateful vs. Stateless)**: La diferencia entre un agente que recuerda el contexto (stateful) y uno que no lo hace (stateless).
+- **Estrategias de Memoria**: Diferentes enfoques para gestionar el historial de una conversación, cada uno con sus propias ventajas y casos de uso (Buffer, Window, Summary).
+- **Integración de Herramientas (Tool Integration)**: La capacidad de los agentes para utilizar herramientas externas (APIs, bases de datos, etc.) para realizar acciones y obtener información del mundo real.
 
-### 2. Integración de Herramientas
-- [5-external-tools.py](5-external-tools.py) - Herramientas externas básicas
-- [6-api-integration.py](6-api-integration.py) - Integración con APIs
-- [7-database-tools.py](7-database-tools.py) - Herramientas de base de datos
-- [8-file-system-tools.py](8-file-system-tools.py) - Herramientas del sistema de archivos
+## Próximos Pasos
 
-### 3. Protocolo MCP
-- [9-mcp-protocol.py](9-mcp-protocol.py) - Fundamentos del protocolo MCP
-- [10-mcp-server.py](10-mcp-server.py) - Implementación de servidor MCP
-- [11-mcp-client.py](11-mcp-client.py) - Cliente MCP para agentes
-- [12-mcp-resources.py](12-mcp-resources.py) - Recursos MCP (archivos, web, etc.)
-
-## 🛠️ Recursos Adicionales
-
-- [memory-patterns.md](memory-patterns.md) - Patrones de diseño para memoria
-- [tool-integration.md](tool-integration.md) - Guía de integración de herramientas
-- [mcp-guide.md](mcp-guide.md) - Guía completa del protocolo MCP
-
-## 📝 Evaluación
-
-- **Ejercicios Prácticos**: Implementación de sistemas de memoria
-- **Proyecto**: Agente con memoria persistente y herramientas externas
-- **Quiz**: Conceptos de memoria y protocolo MCP
-
-## 🔗 Enlaces Útiles
-
-- [Model Context Protocol](https://modelcontextprotocol.io/)
-- [LangChain Memory](https://python.langchain.com/docs/modules/memory/)
-- [MCP GitHub](https://github.com/modelcontextprotocol) 
+Una vez que un agente puede recordar conversaciones y usar herramientas, el siguiente paso es enseñarle a planificar. El **Módulo IL2.3** se centrará en la **planificación y orquestación**, permitiendo a los agentes descomponer objetivos complejos en una serie de pasos ejecutables.
