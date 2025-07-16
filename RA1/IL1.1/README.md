@@ -4,6 +4,11 @@
 
 Esta unidad introduce los conceptos fundamentales de los Modelos de Lenguaje Grandes (LLMs) y las técnicas para establecer conexiones API efectivas. Aprenderás a interactuar con diferentes proveedores de LLMs y comprender las bases técnicas para el desarrollo de aplicaciones con IA generativa.
 
+## Videos de cada archivo del curso:
+
+- Configuración de Github Marketplace Models [1-github_model_api.ipynb](https://github.com/davila7/Ingenier-a-de-Soluciones-con-Inteligencia-Artificial/blob/main/RA1/IL1.1/1-github_model_api.ipynb):
+[![Preview del Video de YouTube](https://img.youtube.com/vi/oYvwSROBTl0/hqdefault.jpg)](https://www.youtube.com/watch?v=oYvwSROBTl0)
+
 ## Objetivos de Aprendizaje
 
 Al completar esta unidad, serás capaz de:
