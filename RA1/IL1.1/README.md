@@ -6,61 +6,77 @@ Esta unidad introduce los conceptos fundamentales de los Modelos de Lenguaje Gra
 
 ## Videos de cada archivo del curso:
 
-- Configuración de Github Marketplace Models [1-github_model_api.ipynb](https://github.com/davila7/Ingenier-a-de-Soluciones-con-Inteligencia-Artificial/blob/main/RA1/IL1.1/1-github_model_api.ipynb):
-[![Preview del Video de YouTube](https://img.youtube.com/vi/oYvwSROBTl0/hqdefault.jpg)](https://www.youtube.com/watch?v=oYvwSROBTl0)
+- **1-github_model_api.ipynb**: Conexión directa a la API de GitHub Models.
+  [![Ver Video](https://img.youtube.com/vi/oYvwSROBTl0/hqdefault.jpg)](https://www.youtube.com/watch?v=oYvwSROBTl0)
+- **2-langchain_model_api.ipynb**: Abstracción de la API con LangChain.
+  [![Ver Video](https://img.youtube.com/vi/v6Dgw0CMAfs/hqdefault.jpg)](https://www.youtube.com/watch?v=v6Dgw0CMAfs)
+- **3-langchain_streaming.ipynb**: Implementación de respuestas en tiempo real (Streaming).
+  [![Ver Video](https://img.youtube.com/vi/xENs45V5C3k/hqdefault.jpg)](https://www.youtube.com/watch?v=xENs45V5C3k)
+- **4-langchain_memory.ipynb**: Gestión de memoria en conversaciones.
+  [![Ver Video](https://img.youtube.com/vi/placeholder/hqdefault.jpg)](https://www.youtube.com/watch?v=placeholder)
+
 
 ## Objetivos de Aprendizaje
 
 Al completar esta unidad, serás capaz de:
 
-1. **Comprender los fundamentos de los LLMs**: Arquitectura, funcionamiento y capacidades
-2. **Establecer conexiones API**: Configurar y usar APIs de diferentes proveedores
-3. **Implementar patrones básicos**: Llamadas síncronas, streaming y gestión de memoria
-4. **Aplicar mejores prácticas**: Configuración segura, manejo de errores y optimización
+1.  **Comprender los fundamentos de los LLMs**: Arquitectura, funcionamiento y capacidades.
+2.  **Establecer conexiones API**: Configurar y usar APIs de diferentes proveedores.
+3.  **Implementar patrones básicos**: Llamadas síncronas, streaming y gestión de memoria.
+4.  **Aplicar mejores prácticas**: Configuración segura, manejo de errores y optimización.
 
 ## Contenido del Módulo
 
-### 1. Fundamentos Teóricos
-- Arquitectura de los Transformers
-- Entrenamiento y fine-tuning de LLMs
-- Conceptos de tokens, embeddings y atención
-- Proveedores principales: OpenAI, GitHub Models, Anthropic, Google
+Este módulo está compuesto por cuatro cuadernos de Jupyter que te guiarán progresivamente desde una conexión básica hasta la creación de un chatbot con memoria.
 
-### 2. Implementaciones Prácticas
+### Notebook 1: Conexión Directa con GitHub Models API (`1-github_model_api.ipynb`)
+Este cuaderno es el punto de partida. Aprenderás a realizar llamadas directas a un modelo de lenguaje utilizando la API de GitHub Models y el cliente de OpenAI.
+- **Qué aprenderás**:
+    - Configurar las variables de entorno y el cliente de `openai`.
+    - Realizar una llamada básica `chat.completions.create`.
+    - Usar parámetros clave como `model`, `messages`, `temperature` y `max_tokens`.
+    - Aplicar el rol `system` para guiar el comportamiento del modelo.
+- **Cómo usarlo**:
+    1. Asegúrate de tener las variables de entorno `GITHUB_BASE_URL` y `GITHUB_TOKEN` configuradas.
+    2. Instala la dependencia `openai`.
+    3. Ejecuta las celdas secuencialmente para ver cómo se establece la conexión y se interactúa con el modelo.
 
-#### Notebook 1: GitHub Models API
-**Archivo**: `1-github_model_api.ipynb`
-- Configuración de credenciales y entorno
-- Conexión directa con OpenAI client
-- Parámetros básicos: temperature, max_tokens
-- Manejo de respuestas y errores
+### Notebook 2: Abstracción con LangChain (`2-langchain_model_api.ipynb`)
+Una vez que entiendes la conexión directa, introducimos LangChain, un framework que simplifica la interacción con LLMs.
+- **Qué aprenderás**:
+    - Las ventajas de usar un framework como LangChain.
+    - Configurar el objeto `ChatOpenAI` para conectarse a diferentes proveedores de modelos.
+    - Utilizar el método `invoke` para interactuar con el modelo.
+    - Entender la estructura de mensajes de LangChain (`HumanMessage`, `AIMessage`, `SystemMessage`).
+- **Cómo usarlo**:
+    1. Instala las dependencias `langchain` y `langchain-openai`.
+    2. Las mismas variables de entorno son utilizadas por `ChatOpenAI`.
+    3. Ejecuta las celdas para comparar la simplicidad del código de LangChain frente a la llamada directa.
 
-#### Notebook 2: LangChain Model API
-**Archivo**: `2-langchain_model_api.ipynb`
-- Introducción al framework LangChain
-- Abstracción de modelos con ChatOpenAI
-- Ventajas de usar frameworks vs API directa
-- Compatibilidad entre proveedores
+### Notebook 3: Streaming en Tiempo Real con LangChain (`3-langchain_streaming.ipynb`)
+Este cuaderno se enfoca en mejorar la experiencia de usuario mostrando las respuestas del modelo en tiempo real.
+- **Qué aprenderás**:
+    - Qué es el streaming y por qué es crucial para aplicaciones interactivas.
+    - Implementar streaming usando el método `.stream()` de LangChain.
+    - Procesar los "chunks" de datos que llegan en tiempo real.
+    - Construir un chatbot simple que responde de forma fluida.
+- **Cómo usarlo**:
+    1. Ejecuta las celdas para ver la diferencia visual y de percepción entre una respuesta normal (`invoke`) y una con streaming.
+    2. Prueba el chatbot interactivo al final del cuaderno para experimentar el streaming en acción.
 
-#### Notebook 3: LangChain Streaming
-**Archivo**: `3-langchain_streaming.ipynb`
-- Implementación de respuestas en tiempo real
-- Ventajas del streaming para UX
-- Manejo de chunks y buffer de datos
-- Casos de uso para aplicaciones interactivas
-
-#### Notebook 4: LangChain Memory
-**Archivo**: `4-langchain_memory.ipynb`
-- Sistemas de memoria conversacional
-- ConversationBufferMemory
-- Persistencia de contexto entre interacciones
-- Limitaciones y consideraciones de memoria
-
-### 3. Conceptos de Prompting
-**Archivo**: `prompting.md`
-- Estructura y componentes de un prompt efectivo
-- Técnicas de ingeniería de prompts
-- Patrones comunes y mejores prácticas
+### Notebook 4: Gestión de Memoria con LangChain (`4-langchain_memory.ipynb`)
+Un LLM no tiene estado. Este cuaderno enseña cómo darle "memoria" para que pueda recordar interacciones pasadas.
+- **Qué aprenderás**:
+    - La importancia de la memoria para conversaciones coherentes.
+    - Implementar diferentes estrategias de memoria:
+        - `ConversationBufferMemory`: Guarda todo el historial.
+        - `ConversationBufferWindowMemory`: Guarda las últimas `k` interacciones.
+        - `ConversationSummaryMemory`: Usa un LLM para resumir la conversación y ahorrar tokens.
+    - Integrar la memoria en cadenas de conversación (`ConversationChain`).
+- **Cómo usarlo**:
+    1. Ejecuta los ejemplos de cada tipo de memoria para entender sus ventajas y desventajas.
+    2. Analiza la comparación final para ver cómo cada tipo de memoria responde a la misma secuencia de preguntas.
+    3. Experimenta con el chatbot de memoria configurable para cambiar de estrategia en tiempo real.
 
 ## Configuración del Entorno
 

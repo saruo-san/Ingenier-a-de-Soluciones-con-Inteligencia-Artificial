@@ -18,3 +18,7 @@ El enfoque práctico permite que las/los estudiantes desarrollen habilidades té
 
 - Ev For 1 - Quiz Fundamentos IA Generativa
 - EV Parcial 1 - Diseño de Soliución con LLM y RAG
+
+## Recursos Adicionales
+- Documentación de APIs
+- Ejemplos de implementación
