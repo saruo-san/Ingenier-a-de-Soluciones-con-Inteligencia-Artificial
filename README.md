@@ -64,6 +64,14 @@ Cada subcarpeta IL contiene ejemplos en Python (`.py`), notebooks (`.ipynb`) o g
 
 ---
 
+## 🎥 Videotutoriales del Curso
+
+Para un aprendizaje más visual, puedes seguir la lista de reproducción completa del curso en YouTube:
+
+- [**Ver la lista de reproducción completa en YouTube**](https://www.youtube.com/playlist?list=PL2gz3vdpKdfVHQqH39oPu4mxLrmAUd2eX)
+
+---
+
 ## 🧭 Navegación recomendada
 
 - **Empieza por RA1** si eres nuevo en IA generativa y prompting.
@@ -98,4 +106,4 @@ Cada subcarpeta IL contiene ejemplos en Python (`.py`), notebooks (`.ipynb`) o g
 
 ---
 
-¡Explora, experimenta y aprende a construir soluciones de IA listas para producción! 
+¡Explora, experimenta y aprende a construir soluciones de IA listas para producción!
