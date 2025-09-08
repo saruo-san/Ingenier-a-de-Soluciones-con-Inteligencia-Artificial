@@ -13,7 +13,7 @@ Esta unidad introduce los conceptos fundamentales de los Modelos de Lenguaje Gra
 - **3-langchain_streaming.ipynb**: Implementación de respuestas en tiempo real (Streaming).
   [![Ver Video](https://img.youtube.com/vi/xENs45V5C3k/hqdefault.jpg)](https://www.youtube.com/watch?v=xENs45V5C3k)
 - **4-langchain_memory.ipynb**: Gestión de memoria en conversaciones.
-  [![Ver Video](https://img.youtube.com/vi/placeholder/hqdefault.jpg)](https://www.youtube.com/watch?v=placeholder)
+  [![Ver Video](https://img.youtube.com/vi/cM_CJPaD0kQ/hqdefault.jpg)](https://www.youtube.com/watch?v=cM_CJPaD0kQ)
 
 
 ## Objetivos de Aprendizaje
